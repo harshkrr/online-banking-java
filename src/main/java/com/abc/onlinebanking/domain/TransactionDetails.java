@@ -4,6 +4,8 @@ import javax.persistence.*;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "TRANSACTION")
 
@@ -26,16 +28,23 @@ public class TransactionDetails {
 	@Column(name = "TO_ACCOUNT")
 	private String transactionToAccount; // transferred to which account
 	
+	@JsonIgnore
+	@ManyToOne
+	private AccountDetails account;
+	public AccountDetails getAccount() { return account; }
+	public void AccountDetails(AccountDetails account) { this.account = account; }
+	
 	//constructor
 	public TransactionDetails(){}
 	public TransactionDetails(String transactionId, float transactionAmount, LocalDate transactionDate,
-			String transactionType, String transactionToAccount) {
+			String transactionType, String transactionToAccount, AccountDetails account) {
 		super();
 		this.transactionId = transactionId;
 		this.transactionAmount = transactionAmount;
 		this.transactionDate = transactionDate;
 		this.transactionType = transactionType;
 		this.transactionToAccount = transactionToAccount;
+		this.account = account;
 	}
 	
 	//getter and setter methods

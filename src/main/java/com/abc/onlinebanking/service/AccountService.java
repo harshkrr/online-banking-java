@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.abc.onlinebanking.Exception.BankTransactionException;
 import com.abc.onlinebanking.domain.AccountDetails;
-import com.abc.onlinebanking.domain.BankAccountTransfer;
 import com.abc.onlinebanking.repository.AccountRepository;
 @Service
 public class AccountService
@@ -36,7 +35,13 @@ public class AccountService
     //saving data
     public void saveOrUpdate(AccountDetails account)
     {
-        accountRepository.save(account);
+    	AccountDetails accountDetails = new AccountDetails();
+    	accountDetails.setAccountBalance(account.getAccountBalance());
+    	accountDetails.setAccountNumber(account.getAccountNumber());
+    	accountDetails.setCustomer(account.getCustomer());
+    	accountDetails.setDateCreated(account.getDateCreated());
+    	accountDetails.setTransaction(account.getTransaction());
+        accountRepository.save(accountDetails);
     }
 
     //deleting a specific record
@@ -58,6 +63,7 @@ public class AccountService
                     "The money in the account '" + id + "' is not enough (" + account.getAccountBalance() + ")");
         }
         account.setAccountBalance((float) newBalance);
+        saveOrUpdate(account);
     }
     
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BankTransactionException.class)

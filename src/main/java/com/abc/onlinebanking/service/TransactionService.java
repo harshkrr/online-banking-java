@@ -11,6 +11,7 @@ public class TransactionService
 {
     @Autowired
     TransactionRepository transactionRepository;
+    AccountService accountService;
 
     //getting all records
     public List<TransactionDetails> getAllTransactions()
@@ -29,7 +30,13 @@ public class TransactionService
     //saving data
     public void saveOrUpdate(TransactionDetails transaction)
     {
-        transactionRepository.save(transaction);
+    	TransactionDetails tran = new TransactionDetails();
+    	tran.setTransactionAmount(tran.getTransactionAmount());
+    	tran.setTransactionDate(tran.getTransactionDate());
+    	tran.setTransactionId(tran.getTransactionId());
+    	tran.setTransactionToAccount(tran.getTransactionToAccount());
+    	tran.setTransactionType(tran.getTransactionType());
+        transactionRepository.save(tran);
     }
 
     //deleting a specific record
