@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.abc.onlinebanking.Exception.BankTransactionException;
 import com.abc.onlinebanking.domain.AccountDetails;
-import com.abc.onlinebanking.domain.BankAccountTransfer;
 import com.abc.onlinebanking.domain.TransactionDetails;
 import com.abc.onlinebanking.service.AccountService;
+import com.abc.onlinebanking.service.TransactionService;
 
 //creating RestController
 @RestController
@@ -25,6 +25,7 @@ public class AccountController
     //autowired the AccountService class
     @Autowired
     AccountService accountService;
+    TransactionService transactionService;
 
     //creating a get mapping that retrieves all the acc details from the database
     @GetMapping("/account")
@@ -56,49 +57,45 @@ public class AccountController
         return acc.getAccountNumber();
     }
     
-    @RequestMapping(value = "/transferMoney", method = RequestMethod.POST)
-    public String processSendMoney(Model model, TransactionDetails sendMoneyForm) throws BankTransactionException  {
-    	System.out.println("Send Money: " + sendMoneyForm.getTransactionAmount());
-    	 
-        try {
-        	accountService.transferMoney(sendMoneyForm.getTransactionId(), //
-                    sendMoneyForm.getTransactionToAccount(), //
-                    sendMoneyForm.getTransactionAmount());
-        	
-        } catch (BankTransactionException e) {
-            model.addAttribute("errorMessage", "Error: " + e.getMessage());
-            return "/sendMoneyPage";
-        }
-        return "redirect:/";
-    }
-    
-    @RequestMapping(value = "/depositMoney", method = RequestMethod.POST)
-    public String processDepositMoney(Model model, TransactionDetails deposit) throws BankTransactionException  {
-    	System.out.println("Deposit Money: " + deposit.getTransactionAmount());
-    	 
-        try {
-        	accountService.depositMoney(deposit.getTransactionId(), //
-        			deposit.getTransactionAmount());
-        	
-        } catch (BankTransactionException e) {
-            model.addAttribute("errorMessage", "Error: " + e.getMessage());
-            return "/depositPage";
-        }
-        return "redirect:/";
-    }
-    
-    @RequestMapping(value = "/withdrawMoney", method = RequestMethod.POST)
-    public String processWithdrawMoney(Model model, TransactionDetails sendMoneyForm) throws BankTransactionException  {
-    	System.out.println("Withdraw Money: " + sendMoneyForm.getTransactionAmount());
-    	 
-        try {
-        	accountService.withdrawMoney(sendMoneyForm.getTransactionId(), //
-                    sendMoneyForm.getTransactionAmount());
-        	
-        } catch (BankTransactionException e) {
-            model.addAttribute("errorMessage", "Error: " + e.getMessage());
-            return "/withdrawMoneyPage";
-        }
+    @RequestMapping(value = "/moneyTranscation", method = RequestMethod.POST)
+    public String MoneyTrancation(Model model, TransactionDetails money) throws BankTransactionException  {
+        String transcationType = money.getTransactionType();
+		if(transcationType.equals("Transfer")){
+			 try {
+		        	accountService.transferMoney(money.getTransactionId(), //
+		                    money.getTransactionToAccount(), //
+		                    money.getTransactionAmount());
+		        	AccountDetails account  = accountService.getAccountById(money.getTransactionId());
+		        	account.addTransaction(money);
+		        	accountService.saveOrUpdate(account);
+		        	
+		        } catch (BankTransactionException e) {
+		            model.addAttribute("errorMessage", "Error: " + e.getMessage());
+		            return "/sendMoneyPage";
+		        }
+		}else if(transcationType.equals("Deposit")){
+			try {
+		    	accountService.depositMoney(money.getTransactionId(), //
+		    			money.getTransactionAmount());
+		    	AccountDetails account  = accountService.getAccountById(money.getTransactionId());
+	        	account.addTransaction(money);
+	        	accountService.saveOrUpdate(account);
+		    } catch (BankTransactionException e) {
+		        model.addAttribute("errorMessage", "Error: " + e.getMessage());
+		        return "/depositPage";
+		    }
+		}else if(transcationType.equals("Withdraw")) {
+			try {
+		    	accountService.withdrawMoney(money.getTransactionId(), //
+		                money.getTransactionAmount());
+		    	AccountDetails account  = accountService.getAccountById(money.getTransactionId());
+	        	account.addTransaction(money);
+	        	accountService.saveOrUpdate(account);
+		    } catch (BankTransactionException e) {
+		        model.addAttribute("errorMessage", "Error: " + e.getMessage());
+		        return "/withdrawMoneyPage";
+		    }
+		}
         return "redirect:/";
     }
 }

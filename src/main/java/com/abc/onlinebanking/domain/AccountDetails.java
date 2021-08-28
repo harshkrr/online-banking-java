@@ -3,6 +3,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -13,7 +15,7 @@ import javax.persistence.*;
 public class AccountDetails {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private String accountNumber;
 	
 	@Column(name = "ACC_BALANCE")
@@ -31,6 +33,11 @@ public class AccountDetails {
 	public void setCustomer(CustomerDetails customer) {
 		this.customer = customer;
 	}
+	
+	@OneToMany(targetEntity = TransactionDetails.class,
+			cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "transactionId_fk")
+	private List<TransactionDetails> transaction = new ArrayList<>();
 
 	//constructor
 	public AccountDetails(){}
@@ -59,6 +66,16 @@ public class AccountDetails {
 	}
 	public void setDateCreated(LocalDate dateCreated) {
 		this.dateCreated = dateCreated;
+	}
+	
+	public void addTransaction(TransactionDetails tran) {
+		transaction.add(tran);
+	}
+	public List<TransactionDetails> getTransaction() {
+		return transaction;
+	}
+	public void setTransaction(List<TransactionDetails> transaction) {
+		this.transaction = transaction;
 	}
 
 
