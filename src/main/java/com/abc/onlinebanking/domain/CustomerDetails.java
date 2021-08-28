@@ -2,6 +2,7 @@ package com.abc.onlinebanking.domain;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.time.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.*;
@@ -33,7 +34,7 @@ public class CustomerDetails {
 	@OneToMany(targetEntity = AccountDetails.class,
 			cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "customer_Id")
-	private List<AccountDetails> accounts;
+	private List<AccountDetails> accounts = new ArrayList<>();
 
 	public CustomerDetails(){}
 

@@ -35,7 +35,6 @@ public class CustomerService
         customerDetails.setAddress(customer.getAddress());
         customerDetails.setCity(customer.getCity());
         customerDetails.setPhone(customer.getPhone());
-
         customerDetails.setAccounts(customer.getAccounts());
         customerRepository.save(customerDetails);
     }

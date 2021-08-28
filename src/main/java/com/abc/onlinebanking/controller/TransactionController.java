@@ -42,7 +42,7 @@ public class TransactionController
 
     //creating post mapping that post the transaction detail in the database
     @PostMapping("/transaction")
-    private long saveUserRole(@RequestBody TransactionDetails transaction)
+    private String saveUserRole(@RequestBody TransactionDetails transaction)
     {
         transactionService.saveOrUpdate(transaction);
         return transaction.getTransactionId();

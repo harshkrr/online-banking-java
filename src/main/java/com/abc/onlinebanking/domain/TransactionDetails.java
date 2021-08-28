@@ -2,18 +2,21 @@ package com.abc.onlinebanking.domain;
 import java.time.*;
 import javax.persistence.*;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Table(name = "TRANSACTION")
 
 public class TransactionDetails {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long transactionId;
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private String transactionId;
 	
 	@Column(name = "AMOUNT")
 	private float transactionAmount;
 	
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	@Column(name = "DATE_OF_TRANSACTION")
 	private LocalDate transactionDate;
 	
@@ -25,7 +28,7 @@ public class TransactionDetails {
 	
 	//constructor
 	public TransactionDetails(){}
-	public TransactionDetails(long transactionId, float transactionAmount, LocalDate transactionDate,
+	public TransactionDetails(String transactionId, float transactionAmount, LocalDate transactionDate,
 			String transactionType, String transactionToAccount) {
 		super();
 		this.transactionId = transactionId;
@@ -36,10 +39,10 @@ public class TransactionDetails {
 	}
 	
 	//getter and setter methods
-	public long getTransactionId() {
+	public String getTransactionId() {
 		return transactionId;
 	}
-	public void setTransactionId(long transactionId) {
+	public void setTransactionId(String transactionId) {
 		this.transactionId = transactionId;
 	}
 	public float getTransactionAmount() {
